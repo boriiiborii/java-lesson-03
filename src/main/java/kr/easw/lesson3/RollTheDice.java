@@ -24,7 +24,7 @@ public class RollTheDice {
             System.out.println((i + 1) + "번: " + frequency[i]);
         }
     }
-    
+
     private static void fillArray(double result) {
         int index = (int) (result / 60);
         if (index >= frequency.length) {

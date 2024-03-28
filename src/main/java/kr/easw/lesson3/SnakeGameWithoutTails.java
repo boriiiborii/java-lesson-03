@@ -22,6 +22,8 @@ public class SnakeGameWithoutTails {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         while (true) {
+            if (!hasItemOnBoard())
+                placeRandomItem();
             printBoard();
             System.out.print("[우측 (r) | 좌측 (l) | 위 (u) | 아래 (d) | 종료 (0) ] : ");
             if (!nextDirection(scanner.next())) {
@@ -29,28 +31,46 @@ public class SnakeGameWithoutTails {
                 System.out.printf("점수: %d\n", score);
                 break;
             }
-            if (!hasItemOnBoard())
-                placeRandomItem();
         }
     }
 
-    /**
-     * 해당 메서드는 다음과 같은 역할을 가져야 합니다 :
-     * 사용자의 입력을 받고, 다음 위치로 옮기거나 게임을 종료해야 합니다.
-     * <p>
-     * 허용되는 입력은 다음과 같습니다 :
-     * - 우측(r) | 좌측 (l) | 위 (u) | 아래 (d) | 종료 (0)
-     * <p>
-     * 다음 좌표는 location 변수에 계속해서 업데이트되어야 합니다.
-     * 만약 다음 좌표에 아이템이 존재한다면, 점수를 1 증가하고 다음 좌표의 값을 0으로 되돌려야 합니다.
-     *
-     * 만약 값이 최대 값 (BOARD_SIZE)이상이 되거나 최소 값(0) 아래로 내려간다면 같은 좌표로 설정하여 이동하지 않도록 해야합니다.
-     *
-     * 만약 사용자의 입력이 종료(0)였다면, false값을 반환하여 게임을 종료해야 합니다.
-     */
     private static boolean nextDirection(String keyword) {
-        throw new RuntimeException("이 코드 라인을 지우고, 이곳에서 작성하십시오.");
+        int newX = location.getX();
+        int newY = location.getY();
+
+        switch (keyword) {
+            case "r":
+                newY++;
+                break;
+            case "l":
+                newY--;
+                break;
+            case "u":
+                newX--;
+                break;
+            case "d":
+                newX++;
+                break;
+            case "0":
+                return false;
+            default:
+                System.out.println("제대로 입력하세요");
+                return true;
+        }
+
+        // 보드의 범위
+        if (newX >= 0 && newX < BOARD_SIZE && newY >= 0 && newY < BOARD_SIZE) {
+            // 아이템을 먹었는지
+            if (board[newX][newY] == 2) {
+                score++;
+                board[newX][newY] = 0; // 아이템 칸 빈 타일로 변경
+            }
+            // 스네이크의 위치 업데이트
+            location = new SnakeLocation(newX, newY);
+        }
+        return true;
     }
+
 
     private static void printBoard() {
         for (int i = 0; i < 25; i++) {
@@ -70,7 +90,7 @@ public class SnakeGameWithoutTails {
                         System.out.print("◼");
                         break;
                     case 2:
-                        System.out.println("* ");
+                        System.out.print("* ");
                         break;
                 }
             }
